@@ -9,10 +9,10 @@ This random scene shows all the feature together and the material and positions 
 #### Diffuse
 This is the image with Lambertian Diffuse material implemented. 
 
-![image](RayTracer/LambertianDiffuse.png)
+![image](RayTracer/LambertianDiffuse.png#pic_center)
 
 This is implemented using the hit normal added with a random direction vector in unit sphere
-```
+```cpp
 class lambertian : public material{
 public:
     lambertian(const vec3&a) : albedo(a) {}
@@ -26,3 +26,5 @@ public:
 };
 
 ```
+#### Metal
+Metal material based on reflection 
