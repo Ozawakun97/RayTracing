@@ -6,5 +6,5 @@ This random scene shows all the feature together and the material and positions 
 
 ## Features
 ### Diffuse
-This is the image with Lambertian Diffuse implemented
+This is the image with Lambertian Diffuse implemented. 
 ![image](RayTracer/LambertianDiffuse.png)
