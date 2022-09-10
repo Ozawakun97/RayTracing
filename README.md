@@ -7,4 +7,4 @@ This random scene shows all the feature together and the material and positions 
 ## Features
 ### Diffuse
 This is the image with Lambertian Diffuse implemented
-![image](RayTracer/cmake-build-debug/image_with_diffuse.ppm)
+![image](RayTracer/LambertianDiffuse.png)
