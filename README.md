@@ -61,8 +61,8 @@ In general the fuzz term controlls the surface roughness of the material. It bas
 scattered = ray(rec.p,reflected + fuzz * random_in_unit_sphere());
 ```
 ### Glass
-Glass is such a special material that when the light hit the surface, it splits into a reflected ray and a refracted ray.This is implemented through randomly choosing between reflection or refraction then generating just one scattered ray every iteration. The picture below shows the hollow glass ball based on this method.
-![image](RayTracer/image_GlassMat.png)
+Glass is such a special material that when the light hit the surface, it splits into a reflected ray and a refracted ray.This is implemented through randomly choosing between reflection or refraction then generating just one scattered ray every iteration. The picture below shows the  glass ball based on this method.
+![image](RayTracer/image_GlassBall.png)
 #### Refraction
 According to the Snell's law the refraction is defined by the following equation(seen in the picture below)
 ![image](RayTracer/refraction.png)
@@ -81,7 +81,10 @@ vec3 refract(const vec3& uv, const vec3& n, double etai_over_etat)
 ```
 #### Hollow Glass Ball
 
-One interesting thing to mention about the implementation of this hollow glass ball is that if the radius of the glass ball turns into negative, the geometry of the ball is unchanged due to the r^2 term, but the surface normal would be inverted to point inward. So the hollow glass ball is made up with a bigger ball with glass material and positive radius and a smaller ball with the same material but the radius is negative 
+One interesting thing to mention about the implementation of this hollow glass ball is that if the radius of the glass ball turns into negative, the geometry of the ball is unchanged due to the r^2 term, but the surface normal would be inverted to point inward. So the hollow glass ball is made up with a bigger ball with glass material and positive radius and a smaller ball with the same material but the radius is negative. The result can be seen in the following picture
+
+![image](RayTracer/image_GlassMat.png)
+
 ``` cpp
 list[3] = new sphere(vec3(-1,0,-1),0.5f, new glass(1.5f));
 list[4] = new sphere(vec3(-1,0,-1),-0.45f, new glass(1.5f));
