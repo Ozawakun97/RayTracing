@@ -79,12 +79,94 @@ vec3 refract(const vec3& uv, const vec3& n, double etai_over_etat)
     return r_out_perp + r_out_parallel;
 }
 ```
+#### Schlick Approximation
+In real world life, glass is view dependent. This is to say, if we look at the window at a steep angle and it will become a mirror. The origin equation for this effect is too complicated, so there is another simpler and widely-used version for that, which is a simple polynomial approximation by Christopher Schlick
+
+```cpp
+static float reflectance(double cosine, double ref_idx) {
+        auto r0 = (1-ref_idx) / (1+ref_idx);
+        r0 = r0*r0;
+        return r0 + (1-r0)*pow((1 - cosine),5);
+    }
+```
+#### Full Glass Code
+With Schlick Approximation, the full glass material code is as below:
+```cpp
+    class glass : public material {
+public:
+    glass(double index_of_refraction) : ir(index_of_refraction) {}
+
+    virtual bool scatter(
+            const ray& r_in, const hit_record& rec, vec3& attenuation, ray& scattered
+    ) const override {
+
+        attenuation = vec3(1.0, 1.0, 1.0);
+        vec3 outward_normal;
+        float refraction_ratio;
+        double cos_theta;
+        float reflect_prob;
+        vec3 unit_direction = unit_vector(r_in.direction());
+        cos_theta = fmin(dot(-unit_direction, rec.normal), 1.0);
+        double sin_theta = sqrt(1.0 - cos_theta*cos_theta);
+        bool can_reflect = refraction_ratio * sin_theta > 1.0f;
+        if(dot(r_in.direction(),rec.normal) > 0){
+            outward_normal = -rec.normal;
+            refraction_ratio = ir;//出射光的cos theta
+            cos_theta = ir * dot(unit_direction,rec.normal);
+        }
+        else{
+            outward_normal = rec.normal;
+            refraction_ratio = 1.0 / ir;
+
+        }
+       // double refraction_ratio = rec.front_face ? (1.0/ir) : ir;
+
+        vec3 direction;
+        if(can_reflect){
+            reflect_prob = 1.0f;
+        }
+        else{
+            reflect_prob = reflectance(cos_theta,refraction_ratio);
+        }
+        if(drand48() < reflect_prob){
+            direction = reflect(unit_direction,rec.normal);
+        }
+        else{
+            direction = refract(unit_direction, outward_normal, refraction_ratio);
+        }
+        scattered = ray(rec.p, direction);
+        return true;
+    }
+
+public:
+    double ir; // Index of Refraction
+private:
+    static float reflectance(double cosine, double ref_idx) {
+        auto r0 = (1-ref_idx) / (1+ref_idx);
+        r0 = r0*r0;
+        return r0 + (1-r0)*pow((1 - cosine),5);
+    }
+};
+```
+#### ColorBug
+There is one thing worth mentioning in the glass material full code that the attenuation is always 1, which means the surface absorbs nothing. 
+```cpp
+virtual bool scatter(
+            const ray& r_in, const hit_record& rec, vec3& attenuation, ray& scattered
+    ) const override {
+
+        attenuation = vec3(1.0, 1.0, 1.0);
+```
+If we change the attenuation = vec3(1.0, 1.0, 0); or to say, kill the blue channel, this will lead to an interesting color bug. The bug result shows in the picture below:
+
+![image](RayTracer/image_GlassBall_KillingBlue.png)
+
 #### Hollow Glass Ball
 
-One interesting thing to mention about the implementation of this hollow glass ball is that if the radius of the glass ball turns into negative, the geometry of the ball is unchanged due to the r^2 term, but the surface normal would be inverted to point inward. So the hollow glass ball is made up with a bigger ball with glass material and positive radius and a smaller ball with the same material but the radius is negative. The result can be seen in the following picture
+One interesting thing to mention about the implementation of this hollow glass ball is that if the radius of the glass ball turns into negative, the geometry of the ball is unchanged due to the r^2 term, but the surface normal would be inverted to point inward. So the hollow glass ball is made up with a bigger ball with glass material and positive radius and a smaller ball with the same material but the radius is negative. The result can be seen in the following picture.
 
 ![image](RayTracer/image_GlassMat.png)
-
+And this trick is done by the following code
 ``` cpp
 list[3] = new sphere(vec3(-1,0,-1),0.5f, new glass(1.5f));
 list[4] = new sphere(vec3(-1,0,-1),-0.45f, new glass(1.5f));
