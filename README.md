@@ -190,3 +190,27 @@ camera(vec3 lookfrom, vec3 lookat, vec3 vup, float vfov,float aspectratio ){
         v = cross(w,u);
     }
 ```
+Then we shoud change the screen space into the world's space, suppose that we have a point P(x,y) in the screen space (seen in the picture below)
+
+![image](RayTracer/ScreenSpace.png)
+
+We can easily get the ray from the camera origin, pointing at P in the screen and then transmitting through the entire scene by the following code
+
+```cpp
+ray get_ray(float u, float v){ return ray(origin,lower_left_corner + u * horizontal + v*vertical - origin);}
+
+```
+A scene with three spheres with diffuse metal and glass material is set up with the default camera setting
+
+![image](RayTracer/ThreeBalls.jpg)
+
+If we move the camera and change its fov in this code 
+```cpp
+camera cam(vec3(-2,2,1),vec3(0,0,-1),vec3(0,1,0),90,float(nx)/float(ny));
+```
+Then we shall get this picture 
+![image](RayTracer/fov90.png)
+
+If we change its fov value to 20 then the following change will happen
+
+![image](RayTracer/fov20.png)
