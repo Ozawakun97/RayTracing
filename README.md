@@ -172,3 +172,21 @@ list[3] = new sphere(vec3(-1,0,-1),0.5f, new glass(1.5f));
 list[4] = new sphere(vec3(-1,0,-1),-0.45f, new glass(1.5f));
 
 ```
+### Moveable Camera
+A camera with an adjustable field of view and its positions is also implemented.
+
+![image](RayTracer/CameraFov.png)
+
+The fordward direction of camera is defined by axis -w (seen in the picture above), and a vector which defines the up direction is defined as well.The we could build the camera coordinate by cross product. The angle theta above implies the fov value and h = tan(theta/2) * length(foraward vector). Since we define the magnitude of forward vector equal with 1. That is to say, we keep the rays coming from the origin and pointing towards plane z = -1 which shows in the picture below.
+
+![image](RayTracer/CameraPlane.png)
+
+Thus we could set up the camera coordinante by the following code
+```cpp
+camera(vec3 lookfrom, vec3 lookat, vec3 vup, float vfov,float aspectratio ){
+        vec3 u,v,w;
+        w = unit_vector(lookfrom - lookat);
+        u = unit_vector(cross(vup,w));
+        v = cross(w,u);
+    }
+```
