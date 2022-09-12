@@ -4,6 +4,10 @@ A demo for brute-forcced RayTracing, written in raw C-Language styled way, with 
 This random scene shows all the feature together and the material and positions of the balls are randomly generated
 ![image](RayTracer/coverpage.png)
 
+There is also another GPU version of ray tracer based on DirectX12 Ray Tracing and Unity, which speeds up the rendering process compared with the brute-forced CPU ray tracer mentioned above. The picture below is the conrnel box rendered based on this method.
+
+![image](RayTracingUnity(DXR)/CornellBox.png)
+
 ## Features
 ### Material
 #### Diffuse
