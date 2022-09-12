@@ -218,3 +218,5 @@ Then we shall get this picture
 If we change its fov value to 20 then the following change will happen
 
 ![image](RayTracer/fov20.png)
+## Discussion about the extention of the code in the future
+This project will implement phonton mapping in the future
